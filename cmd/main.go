@@ -9,6 +9,8 @@ import (
 
 	"github.com/YurcheuskiRadzivon/booking-system/internal/config"
 	"github.com/YurcheuskiRadzivon/booking-system/internal/server"
+	"github.com/YurcheuskiRadzivon/booking-system/internal/service/booking"
+	"github.com/YurcheuskiRadzivon/booking-system/internal/service/notification"
 )
 
 func main() {
@@ -24,7 +26,17 @@ func main() {
 }
 
 func run(cfg *config.Config, ctx context.Context) {
-	srv := server.New(cfg.HTTP.PORT)
+	booking, err := booking.NewService(ctx)
+	if err != nil {
+		log.Fatalf("Booking: %v", err)
+	}
+
+	notification, err := notification.NewService(ctx)
+	if err != nil {
+		log.Fatalf("Notification: %v", err)
+	}
+
+	srv := server.New(cfg.HTTP.PORT, booking, notification)
 
 	srv.RegisterRoutes()
 
@@ -41,7 +53,7 @@ func run(cfg *config.Config, ctx context.Context) {
 		log.Panicf("server: %s", err)
 	}
 
-	err := srv.Shutdown()
+	err = srv.Shutdown()
 	if err != nil {
 		log.Fatalf("server: %v", err)
 	}

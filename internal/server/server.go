@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/YurcheuskiRadzivon/booking-system/internal/service/booking"
+	"github.com/YurcheuskiRadzivon/booking-system/internal/service/notification"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -15,16 +17,18 @@ const (
 )
 
 type Server struct {
-	app     *fiber.App
-	notify  chan error
-	address string
+	app          *fiber.App
+	notify       chan error
+	address      string
+	booking      booking.Service
+	notification notification.Service
 }
 
 type Error struct {
 	Message string `json:"message" example:"message"`
 }
 
-func New(port string) *Server {
+func New(port string, booking booking.Service, notification notification.Service) *Server {
 	s := &Server{
 		app:     nil,
 		notify:  make(chan error, 1),
