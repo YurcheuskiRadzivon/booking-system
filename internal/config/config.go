@@ -7,11 +7,16 @@ import (
 
 type (
 	Config struct {
-		HTTP HTTP
+		HTTP     HTTP
+		Database Database
 	}
 
 	HTTP struct {
 		PORT string `env:"HTTP_PORT,required"`
+	}
+
+	Database struct {
+		ConnectionString string `env:"DATABASE_URL,required"`
 	}
 )
 
